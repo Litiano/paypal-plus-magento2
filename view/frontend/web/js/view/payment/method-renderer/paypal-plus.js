@@ -308,6 +308,9 @@ define([
             var self = this;
             var serviceUrl = urlBuilder.build('paypalplus/payment/index');
             var approvalUrl = '';
+            var iframeErrorElem = '#iframe-error';
+            $(iframeErrorElem).html('');
+            $(iframeErrorElem).hide();
             // fullScreenLoader.startLoader();
             storage.post(serviceUrl, '')
             .done(function (response) {
@@ -323,7 +326,6 @@ define([
             .fail(function (response) {
                 console.log("ERROR");
                 console.log(response);
-                var iframeErrorElem = '#iframe-error';
 
                 $(iframeErrorElem).html('');
                 $(iframeErrorElem).append($.mage.__('<div><span>Error loading the payment method. Please try again, if problem persists contact us.</span></div>'));
@@ -332,6 +334,9 @@ define([
                 $('#iframe-warning').hide();
                 $('#continueButton').prop("disabled", true);
                 fullScreenLoaderPayPal.stopLoader();
+
+                window.checkoutConfig.payment.paypalbr_paypalplus.is_payment_ready = false;
+                self.isPaymentReady = false;
             })
             .always(function () {
                 // fullScreenLoader.stopLoader();
